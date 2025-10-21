@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useState } from "react";
 import {
   Field,
   FieldLabel,
@@ -9,8 +9,54 @@ import {
 import { Input } from "@/components/ui/input";
 import { Button } from "../components/ui/button";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
+import {registerUser, loginUser} from '../utils/api';
+import {toast} from "sonner"
+
+
+
 
 function Auth() {
+
+  const [loading, setLoading] = useState(false);
+  const [tab, setTab] = useState("login")
+  const [formData, setFormData] = useState({
+    firstName: "",
+    lastName: "",
+    userName: "",
+    email: "",
+    password: "",
+    confirmPassword: "",
+  })
+
+  const handleChange = (e) => {
+    setFormData({...formData, [e.target.id]: e.target.value})
+  };
+
+  const handleSubmit = async (e) => {
+    e.preventDefault();
+    setLoading(true);
+
+
+     try{
+    if(tab === "register"){
+      const res = await registerUser(formData);
+      toast.success(res.message || "Registered successfully")
+    } else {
+      const res = await loginUser(formData);
+      toast.success(res.message || "Logged in successfully");
+    } 
+  }catch (error){
+      console.error(error)
+      toast.error(error.message || "Something went wrong.")
+    } finally {
+      setLoading(false)
+    }
+  }
+
+ 
+    
+  
+
   return (
     <div className="flex items-center justify-center min-h-screen bg-gradient-to-br from-neutral-100 via-beige-100 to-neutral-200 text-neutral-800 ">
       <div className="w-full max-w-md bg-white/80 p-8 rounded-2xl shadow-xl backdrop-blur-md border border-neutral-200">
@@ -18,7 +64,7 @@ function Auth() {
           Welcome
         </h1>
 
-        <Tabs defaultValue="login" className="w-full">
+        <Tabs  value={tab} onValueChange={setTab} defaultValue="login" className="w-full">
           <TabsList className="grid w-full grid-cols-2 bg-neutral-100 rounded-xl mb-6 border border-neutral-200">
             <TabsTrigger
               value="login"
@@ -36,14 +82,17 @@ function Auth() {
 
           {/* LOGIN TAB */}
           <TabsContent value="login">
-            <FieldSet>
+            <form onSubmit={handleSubmit} >
+              <FieldSet>
               <FieldGroup>
                 <Field>
-                  <FieldLabel htmlFor="username">Username</FieldLabel>
+                  <FieldLabel htmlFor="username">Email</FieldLabel>
                   <Input
-                    id="username"
+                    id="email"
                     type="text"
-                    placeholder="Enter your username"
+                    placeholder="Enter your email"
+                    onChange={handleChange}
+                    value={formData.email}
                     className="border-neutral-300 focus-visible:ring-neutral-500"
                   />
                 </Field>
@@ -57,19 +106,26 @@ function Auth() {
                     id="password"
                     type="password"
                     placeholder="********"
+                    onChange={handleChange}
+                    value={formData.password}
                     className="border-neutral-300 focus-visible:ring-neutral-500"
                   />
                 </Field>
               </FieldGroup>
             </FieldSet>
-            <Button className="mt-4 w-full bg-neutral-900 text-white hover:bg-neutral-800">
-              Login
+            <Button 
+            type="submit"
+            disabled={loading}
+            className="mt-4 w-full bg-neutral-900 text-white hover:bg-neutral-800">
+              {loading ? "Loggin in...": "Login"}
             </Button>
+            </form>
           </TabsContent>
 
           {/* REGISTER TAB */}
           <TabsContent value="register">
-            <FieldSet>
+           <form onSubmit={handleSubmit} >
+             <FieldSet>
               <FieldGroup>
                 <div className="flex gap-3">
                   <Field className="w-1/2">
@@ -78,6 +134,8 @@ function Auth() {
                       id="firstName"
                       type="text"
                       placeholder="First Name"
+                      onChange={handleChange}
+                        value={formData.firstName}
                       className="border-neutral-300 focus-visible:ring-neutral-500"
                     />
                   </Field>
@@ -87,17 +145,21 @@ function Auth() {
                       id="lastName"
                       type="text"
                       placeholder="Last Name"
+                      onChange={handleChange}
+                        value={formData.lastName}
                       className="border-neutral-300 focus-visible:ring-neutral-500"
                     />
                   </Field>
                 </div>
 
                 <Field>
-                  <FieldLabel htmlFor="username">Username</FieldLabel>
+                  <FieldLabel htmlFor="userName">Username</FieldLabel>
                   <Input
-                    id="username"
+                    id="userName"
                     type="text"
                     placeholder="Choose a username"
+                    onChange={handleChange}
+                        value={formData.userName}
                     className="border-neutral-300 focus-visible:ring-neutral-500"
                   />
                 </Field>
@@ -108,6 +170,8 @@ function Auth() {
                     id="email"
                     type="email"
                     placeholder="Enter your email"
+                    onChange={handleChange}
+                        value={formData.email}
                     className="border-neutral-300 focus-visible:ring-neutral-500"
                   />
                 </Field>
@@ -121,6 +185,8 @@ function Auth() {
                     id="password"
                     type="password"
                     placeholder="********"
+                    onChange={handleChange}
+                        value={formData.password}
                     className="border-neutral-300 focus-visible:ring-neutral-500"
                   />
                 </Field>
@@ -133,14 +199,20 @@ function Auth() {
                     id="confirmPassword"
                     type="password"
                     placeholder="********"
+                    onChange={handleChange}
+                        value={formData.confirmPassword}
                     className="border-neutral-300 focus-visible:ring-neutral-500"
                   />
                 </Field>
               </FieldGroup>
             </FieldSet>
-            <Button className="mt-4 w-full bg-neutral-900 text-white hover:bg-neutral-800">
-              Register
+            <Button 
+            type="submit"
+            disabled={loading}
+            className="mt-4 w-full bg-neutral-900 text-white hover:bg-neutral-800">
+              {loading ? "Registering..." : "Register"}
             </Button>
+           </form>
           </TabsContent>
         </Tabs>
       </div>
