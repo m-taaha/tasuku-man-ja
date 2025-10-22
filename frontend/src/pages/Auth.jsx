@@ -9,7 +9,7 @@ import {
 import { Input } from "@/components/ui/input";
 import { Button } from "../components/ui/button";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
-import {registerUser, loginUser} from '../utils/api';
+import {registerUser, loginUser} from '../utils/api/api';
 import {toast} from "sonner"
 
 
