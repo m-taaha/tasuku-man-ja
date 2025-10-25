@@ -11,14 +11,14 @@ import { Button } from "../components/ui/button";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import {registerUser, loginUser} from '../utils/api/api';
 import {toast} from "sonner"
+import { useNavigate } from "react-router-dom";
 
 
 
 
 function Auth() {
-
   const [loading, setLoading] = useState(false);
-  const [tab, setTab] = useState("login")
+  const [tab, setTab] = useState("login");
   const [formData, setFormData] = useState({
     firstName: "",
     lastName: "",
@@ -26,36 +26,40 @@ function Auth() {
     email: "",
     password: "",
     confirmPassword: "",
-  })
+  });
+  const navigate = useNavigate();
 
   const handleChange = (e) => {
-    setFormData({...formData, [e.target.id]: e.target.value})
+    setFormData({ ...formData, [e.target.id]: e.target.value });
   };
 
+  //*handling submit
+  
   const handleSubmit = async (e) => {
     e.preventDefault();
     setLoading(true);
 
+    try {
+      if (tab === "register") {
+        const res = await registerUser(formData);
+        toast.success(res.message || "Registered successfully");
+        
+      } else {
+        const res = await loginUser(formData);
+          toast.success(res.message || "Logged in successfully");
+          navigate("/dashboard");
+       
+      } 
+    } catch (error) {
+      console.error(error);
 
-     try{
-    if(tab === "register"){
-      const res = await registerUser(formData);
-      toast.success(res.message || "Registered successfully")
-    } else {
-      const res = await loginUser(formData);
-      toast.success(res.message || "Logged in successfully");
-    } 
-  }catch (error){
-      console.error(error)
-      toast.error(error.message || "Something went wrong.")
+      //handle axios error response safely
+      const msg = error.response?.data?.message ||error.message || "Something went wrong.";
+      toast.error(msg);
     } finally {
-      setLoading(false)
+      setLoading(false);
     }
-  }
-
- 
-    
-  
+  };
 
   return (
     <div className="flex items-center justify-center min-h-screen bg-gradient-to-br from-neutral-100 via-beige-100 to-neutral-200 text-neutral-800 ">
@@ -64,7 +68,12 @@ function Auth() {
           Welcome
         </h1>
 
-        <Tabs  value={tab} onValueChange={setTab} defaultValue="login" className="w-full">
+        <Tabs
+          value={tab}
+          onValueChange={setTab}
+          defaultValue="login"
+          className="w-full"
+        >
           <TabsList className="grid w-full grid-cols-2 bg-neutral-100 rounded-xl mb-6 border border-neutral-200">
             <TabsTrigger
               value="login"
@@ -82,137 +91,139 @@ function Auth() {
 
           {/* LOGIN TAB */}
           <TabsContent value="login">
-            <form onSubmit={handleSubmit} >
+            <form onSubmit={handleSubmit}>
               <FieldSet>
-              <FieldGroup>
-                <Field>
-                  <FieldLabel htmlFor="username">Email</FieldLabel>
-                  <Input
-                    id="email"
-                    type="text"
-                    placeholder="Enter your email"
-                    onChange={handleChange}
-                    value={formData.email}
-                    className="border-neutral-300 focus-visible:ring-neutral-500"
-                  />
-                </Field>
+                <FieldGroup>
+                  <Field>
+                    <FieldLabel htmlFor="username">Email</FieldLabel>
+                    <Input
+                      id="email"
+                      type="text"
+                      placeholder="Enter your email"
+                      onChange={handleChange}
+                      value={formData.email}
+                      className="border-neutral-300 focus-visible:ring-neutral-500"
+                    />
+                  </Field>
 
-                <Field>
-                  <FieldLabel htmlFor="password">Password</FieldLabel>
-                  <FieldDescription>
-                    Must be at least 6 characters long.
-                  </FieldDescription>
-                  <Input
-                    id="password"
-                    type="password"
-                    placeholder="********"
-                    onChange={handleChange}
-                    value={formData.password}
-                    className="border-neutral-300 focus-visible:ring-neutral-500"
-                  />
-                </Field>
-              </FieldGroup>
-            </FieldSet>
-            <Button 
-            type="submit"
-            disabled={loading}
-            className="mt-4 w-full bg-neutral-900 text-white hover:bg-neutral-800">
-              {loading ? "Loggin in...": "Login"}
-            </Button>
+                  <Field>
+                    <FieldLabel htmlFor="password">Password</FieldLabel>
+                    <FieldDescription>
+                      Must be at least 6 characters long.
+                    </FieldDescription>
+                    <Input
+                      id="password"
+                      type="password"
+                      placeholder="********"
+                      onChange={handleChange}
+                      value={formData.password}
+                      className="border-neutral-300 focus-visible:ring-neutral-500"
+                    />
+                  </Field>
+                </FieldGroup>
+              </FieldSet>
+              <Button
+                type="submit"
+                disabled={loading}
+                className="mt-4 w-full bg-neutral-900 text-white hover:bg-neutral-800"
+              >
+                {loading ? "Logging in..." : "Login"}
+              </Button>
             </form>
           </TabsContent>
 
           {/* REGISTER TAB */}
           <TabsContent value="register">
-           <form onSubmit={handleSubmit} >
-             <FieldSet>
-              <FieldGroup>
-                <div className="flex gap-3">
-                  <Field className="w-1/2">
-                    <FieldLabel htmlFor="firstName">First Name</FieldLabel>
-                    <Input
-                      id="firstName"
-                      type="text"
-                      placeholder="First Name"
-                      onChange={handleChange}
+            <form onSubmit={handleSubmit}>
+              <FieldSet>
+                <FieldGroup>
+                  <div className="flex gap-3">
+                    <Field className="w-1/2">
+                      <FieldLabel htmlFor="firstName">First Name</FieldLabel>
+                      <Input
+                        id="firstName"
+                        type="text"
+                        placeholder="First Name"
+                        onChange={handleChange}
                         value={formData.firstName}
-                      className="border-neutral-300 focus-visible:ring-neutral-500"
-                    />
-                  </Field>
-                  <Field className="w-1/2">
-                    <FieldLabel htmlFor="lastName">Last Name</FieldLabel>
-                    <Input
-                      id="lastName"
-                      type="text"
-                      placeholder="Last Name"
-                      onChange={handleChange}
+                        className="border-neutral-300 focus-visible:ring-neutral-500"
+                      />
+                    </Field>
+                    <Field className="w-1/2">
+                      <FieldLabel htmlFor="lastName">Last Name</FieldLabel>
+                      <Input
+                        id="lastName"
+                        type="text"
+                        placeholder="Last Name"
+                        onChange={handleChange}
                         value={formData.lastName}
+                        className="border-neutral-300 focus-visible:ring-neutral-500"
+                      />
+                    </Field>
+                  </div>
+
+                  <Field>
+                    <FieldLabel htmlFor="userName">Username</FieldLabel>
+                    <Input
+                      id="userName"
+                      type="text"
+                      placeholder="Choose a username"
+                      onChange={handleChange}
+                      value={formData.userName}
                       className="border-neutral-300 focus-visible:ring-neutral-500"
                     />
                   </Field>
-                </div>
 
-                <Field>
-                  <FieldLabel htmlFor="userName">Username</FieldLabel>
-                  <Input
-                    id="userName"
-                    type="text"
-                    placeholder="Choose a username"
-                    onChange={handleChange}
-                        value={formData.userName}
-                    className="border-neutral-300 focus-visible:ring-neutral-500"
-                  />
-                </Field>
+                  <Field>
+                    <FieldLabel htmlFor="email">Email</FieldLabel>
+                    <Input
+                      id="email"
+                      type="email"
+                      placeholder="Enter your email"
+                      onChange={handleChange}
+                      value={formData.email}
+                      className="border-neutral-300 focus-visible:ring-neutral-500"
+                    />
+                  </Field>
 
-                <Field>
-                  <FieldLabel htmlFor="email">Email</FieldLabel>
-                  <Input
-                    id="email"
-                    type="email"
-                    placeholder="Enter your email"
-                    onChange={handleChange}
-                        value={formData.email}
-                    className="border-neutral-300 focus-visible:ring-neutral-500"
-                  />
-                </Field>
+                  <Field>
+                    <FieldLabel htmlFor="password">Password</FieldLabel>
+                    <FieldDescription>
+                      Must be at least 6 characters long.
+                    </FieldDescription>
+                    <Input
+                      id="password"
+                      type="password"
+                      placeholder="********"
+                      onChange={handleChange}
+                      value={formData.password}
+                      className="border-neutral-300 focus-visible:ring-neutral-500"
+                    />
+                  </Field>
 
-                <Field>
-                  <FieldLabel htmlFor="password">Password</FieldLabel>
-                  <FieldDescription>
-                    Must be at least 6 characters long.
-                  </FieldDescription>
-                  <Input
-                    id="password"
-                    type="password"
-                    placeholder="********"
-                    onChange={handleChange}
-                        value={formData.password}
-                    className="border-neutral-300 focus-visible:ring-neutral-500"
-                  />
-                </Field>
-
-                <Field>
-                  <FieldLabel htmlFor="confirmPassword">
-                    Confirm Password
-                  </FieldLabel>
-                  <Input
-                    id="confirmPassword"
-                    type="password"
-                    placeholder="********"
-                    onChange={handleChange}
-                        value={formData.confirmPassword}
-                    className="border-neutral-300 focus-visible:ring-neutral-500"
-                  />
-                </Field>
-              </FieldGroup>
-            </FieldSet>
-            <Button 
-            type="submit"
-            disabled={loading}
-            className="mt-4 w-full bg-neutral-900 text-white hover:bg-neutral-800">
-              {loading ? "Registering..." : "Register"}
-            </Button>
-           </form>
+                  <Field>
+                    <FieldLabel htmlFor="confirmPassword">
+                      Confirm Password
+                    </FieldLabel>
+                    <Input
+                      id="confirmPassword"
+                      type="password"
+                      placeholder="********"
+                      onChange={handleChange}
+                      value={formData.confirmPassword}
+                      className="border-neutral-300 focus-visible:ring-neutral-500"
+                    />
+                  </Field>
+                </FieldGroup>
+              </FieldSet>
+              <Button
+                type="submit"
+                disabled={loading}
+                className="mt-4 w-full bg-neutral-900 text-white hover:bg-neutral-800"
+              >
+                {loading ? "Registering..." : "Register"}
+              </Button>
+            </form>
           </TabsContent>
         </Tabs>
       </div>

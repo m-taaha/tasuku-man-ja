@@ -1,4 +1,4 @@
-import { success } from "zod";
+
 import { User } from "../models/user.model.js"
 import { userRegisterSchema, userLoginSchema } from "../validators/user.validator.js"
 import jwt from 'jsonwebtoken';
@@ -95,7 +95,7 @@ try {
       httpOnly: true,
       secure: process.env.NODE_ENV === "production",
       sameSite: "strict",
-      maxAge: 7 * 24 * 60 * 1000, //7days
+      maxAge: 7 * 24 * 60 * 60 * 1000, //7days
     });
 
 return res.status(200).json({
@@ -121,9 +121,10 @@ export const userLogout = async (req, res) => {
   //set the expiration date to a time in the past
 
   try {
-    res.cookie("userToken", null, {
+    res.clearCookie("userToken", {
       httpOnly: true,
-      expires: new Date(0),
+      sameSite: "strict",
+      secure: process.env.NODE_ENV === "production",
     });
 
     return res.status(200).json({

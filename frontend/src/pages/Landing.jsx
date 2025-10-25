@@ -7,7 +7,6 @@ function Landing() {
   const navigate = useNavigate()
   return (
     <div className="min-h-screen bg-gradient-to-br from-neutral-100 via-beige-100 to-neutral-200 text-neutral-900 flex flex-col">
-     
 
       {/* Hero Section */}
       <section className="flex flex-col md:flex-row items-center justify-between px-10 mt-10">
@@ -22,8 +21,10 @@ function Landing() {
             interface that makes productivity feel effortless.
           </p>
           <div className="flex gap-4">
-            <Button onClick={ ()=> navigate('/auth')}
-            className="bg-neutral-900 text-white hover:bg-neutral-800">
+            <Button
+              onClick={() => navigate("/auth")}
+              className="bg-neutral-900 text-white hover:bg-neutral-800"
+            >
               Get Started
             </Button>
             <Button variant="outline" className="border-neutral-400">
