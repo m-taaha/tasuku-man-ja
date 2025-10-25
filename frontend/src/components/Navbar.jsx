@@ -1,9 +1,15 @@
 import React from "react";
 import { Button } from "./ui/button";
-import { useNavigate } from "react-router-dom";
+import { useLocation, useNavigate } from "react-router-dom";
 
 function Navbar() {
   const navigate = useNavigate();
+  const location = useLocation();
+
+  const isLandingPage = location.pathname === ("/")
+  const isAuthPage = location.pathname === ("/auth");
+
+  if(!isLandingPage && !isAuthPage) return null;
 
   return (
     <div className="bg-gradient-to-br from-neutral-100 via-beige-100 to-neutral-200 text-neutral-900 flex flex-col">
