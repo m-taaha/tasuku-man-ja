@@ -13,7 +13,7 @@ export const userRegister = async (req, res) => {
         const validation = userRegisterSchema.safeParse(req.body);
 
         if(!validation.success){
-          return  res.status(404).json({
+          return  res.status(400).json({
                 message: `invalid input data`,
                 error: validation.error.errors
             })
@@ -62,7 +62,7 @@ try {
     const validation = userLoginSchema.safeParse(req.body);
 
     if(!validation.success){
-        return res.status(409).json({
+        return res.status(400).json({
             message: `Invalid Credentials`,
             error: validation.error.errors
         })
@@ -76,7 +76,7 @@ try {
     // check if user exists
     if(!user){
         return res.status(401).json({
-            message: 'Invalid Credentials',
+            message: 'Invalid Credentials: User does not exist',
         })
     }
 // check if password matches

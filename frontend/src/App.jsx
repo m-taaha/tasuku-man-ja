@@ -4,6 +4,7 @@ import Landing from "./pages/Landing";
 import Auth from "./pages/Auth";
 import "./App.css";
 import Dashboard from "./pages/Dashboard";
+import { Toaster } from "sonner";
 
 function App() {
   return (
@@ -14,6 +15,7 @@ function App() {
         <Route path="/auth" element={<Auth />} />
         <Route path="/dashboard" element={<Dashboard />} />
       </Routes>
+      <Toaster richColors position="top-right" />
     </Router>
   );
 }

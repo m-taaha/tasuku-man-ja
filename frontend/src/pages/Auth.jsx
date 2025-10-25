@@ -43,6 +43,18 @@ function Auth() {
       if (tab === "register") {
         const res = await registerUser(formData);
         toast.success(res.message || "Registered successfully");
+
+//reset form after successfully registering
+
+        setTab('login');
+          setFormData({
+            firstName: "",
+            lastName: "",
+            userName: "",
+            email: "",
+            password: "",
+            confirmPassword: "",
+          });
         
       } else {
         const res = await loginUser(formData);
@@ -51,11 +63,23 @@ function Auth() {
        
       } 
     } catch (error) {
-      console.error(error);
+      console.error("Auth Error:" , error);
 
-      //handle axios error response safely
-      const msg = error.response?.data?.message ||error.message || "Something went wrong.";
-      toast.error(msg);
+      //handle error bases on backend message 
+      if(error.response?.status === 400 ) {
+        toast.error("Please enter valid input fields.");
+      } else if (error.response?.status === 401) {
+        toast.error( "Invlaid credentials. Please check your email or password.");
+      } else if (error.response?.status === 409) {
+        toast.error("User already exist with this email.");
+      } else {
+        //handle axios error response safely
+        const msg =
+          error.response?.data?.message ||
+          error.message ||
+          "Something went wrong.";
+        toast.error(msg);
+      }
     } finally {
       setLoading(false);
     }
