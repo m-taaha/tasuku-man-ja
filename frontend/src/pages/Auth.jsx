@@ -58,6 +58,9 @@ function Auth() {
         
       } else {
         const res = await loginUser(formData);
+        //store user info in localstorage for later use
+        localStorage.setItem("user", JSON.stringify(res.user));
+
           toast.success(res.message || "Logged in successfully");
           navigate("/dashboard");
        
