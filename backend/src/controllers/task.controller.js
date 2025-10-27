@@ -1,6 +1,6 @@
 import {Task} from "../models/task.model.js"
 
-
+//create task
 export const createTask = async (req, res) => {
     try{
         const {title, priority, dueDate, description} = req.body;
@@ -31,6 +31,7 @@ export const createTask = async (req, res) => {
     }
 }
 
+// getAllTasks
 export const getAllTasks = async(req, res) => {
     try{
         const tasks = await Task.find({ author: req.user._id}).sort({createdAt:-1});
@@ -44,6 +45,7 @@ export const getAllTasks = async(req, res) => {
     }
 }
 
+// getTaskById
 export const getTaskById = async (req, res) => {
     try{
         const {id} = req.params;
@@ -57,7 +59,46 @@ export const getTaskById = async (req, res) => {
             return res.status(200).json({task})
             
     }catch(error){
-        console.log("Server Error:" , error);
+        console.log("Get task by Id error:" , error);
+        return res.status(500).json({
+            message: "Server Error"
+        })
+    }
+}
+
+// updateTask
+export const updateTask = async (req, res) => {
+    try{
+        const {id} = req.params;
+        const {title, description, priority, dueDate, completed} = req.body;
+
+        const task = await Task.findOne({_id: id, author: req.user._id});
+
+        if(!task){
+            return res.status(404).json({
+                message: "Task not found",
+            })
+        }
+
+        //update only if values are provided (to support partial updates)
+
+        if(title) task.title = title;
+        if(description) task.description = description;
+        if(priority) task.priority = priority;
+        if(dueDate) task.dueDate = dueDate;
+        if (completed !== undefined) {
+          task.completed = completed === true || completed === "true";
+        }
+
+       const updatedTask = await task.save();
+
+        return res.status(200).json({
+            message: "Task Updated Successfully",
+            task: updateTask,
+        })
+
+    }catch(error){
+        console.log("Task update error", error)
         return res.status(500).json({
             message: "Server Error"
         })
