@@ -25,8 +25,21 @@ export const createTask = async (req, res) => {
 
     }catch(error){
         console.log("Task Create Error:", error);
-        res.status(500).json({
+       return res.status(500).json({
             message: "Server Error"
         })
+    }
+}
+
+export const getAllTasks = async(req, res) => {
+    try{
+        const tasks = await Task.find({ author: req.user._id}).sort({createdAt:-1});
+        return res.status(200).json({tasks})
+        
+    }catch(error){
+        console.log("Get all Tasks error", error);
+        res.status(500).json({
+          message: "Server Error"
+        });
     }
 }
