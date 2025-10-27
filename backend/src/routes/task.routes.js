@@ -1,6 +1,6 @@
 import express from 'express'
 import { isAuthenticated } from '../middlewares/auth.middleware.js';
-import { createTask, getAllTasks, getTaskById, updateTask } from '../controllers/task.controller.js';
+import { createTask, deleteTask, getAllTasks, getTaskById, updateTask } from '../controllers/task.controller.js';
 
 
 const taskRouter = express.Router();
@@ -10,5 +10,6 @@ taskRouter.post('/create',isAuthenticated, createTask)
 taskRouter.get('/tasks',isAuthenticated, getAllTasks)
 taskRouter.get('/tasks/:id',isAuthenticated, getTaskById)
 taskRouter.put('/update/:id',isAuthenticated, updateTask)
+taskRouter.delete('/delete/:id',isAuthenticated, deleteTask)
 
 export default taskRouter;

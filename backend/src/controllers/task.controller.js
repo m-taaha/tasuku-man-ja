@@ -1,3 +1,4 @@
+import { tr } from "zod/v4/locales";
 import {Task} from "../models/task.model.js"
 
 //create task
@@ -94,7 +95,7 @@ export const updateTask = async (req, res) => {
 
         return res.status(200).json({
             message: "Task Updated Successfully",
-            task: updateTask,
+            task: updatedTask,
         })
 
     }catch(error){
@@ -102,5 +103,31 @@ export const updateTask = async (req, res) => {
         return res.status(500).json({
             message: "Server Error"
         })
+    }
+}
+
+
+//delete task
+export const deleteTask = async (req, res) => {
+    try{
+        const {id} = req.params;
+
+        const task = await Task.findByIdAndDelete({_id: id, author: req.user._id});
+
+        if(!task) {
+            return res.status(404).json({
+                message: "Task not Found"
+            })
+        }
+
+        return res.status(200).json({
+            message: "Task deleted successfully",
+            deletedTask: id,
+        })
+    }catch(error){
+        console.log("Task delete error", error);
+        return res.status(500).json({
+          message: "Server Error",
+        });
     }
 }
