@@ -30,7 +30,27 @@ function TaskCard({task, onDelete}) {
         </CardTitle>
       </CardHeader>
       <CardContent>
-        <p className='text-neutral-600 text-sm mb-4'>{task.description}</p>
+        {/* description */}
+        <p className='text-neutral-600 text-sm mb-2'>{task.description || "No description provided"}</p>
+      
+        {/* priority */}
+        <p className='text-xs font-medium text-neutral-700'>
+          Priority:{" "}
+          <span
+          className={`${
+            task.priority === "high" ? "text=red-500" : task.priority === "medium" ? "text-yellow-600" : "text-green-600"
+          }`}
+          >
+            {task.priority || "Not set"}
+          </span>
+        </p>
+
+        {/* due date */}
+        <p className='text-xs text-neutral-500 mb-4'>
+          Due: {task.dueDate? new Date(task.dueDate).toLocaleDateString() : "Not set"}
+        </p>
+
+
         <div className='flex justify-between items-center'>
           <Button variant="outline">Edit</Button>
           <Button 

@@ -54,13 +54,13 @@ function Dashboard() {
         </div>
 
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
-          {tasks.map((task) => {
+          {tasks.map((task) => (
             <TaskCard key={task._id} task={task} 
             onDelete={(deletedId) => 
               setTasks(tasks.filter((t) => t._id !== deletedId))
             }
-            />;
-          })}
+            />
+          ))}
 
           {tasks.length === 0 && (
             <p className="text-neutral-500 mt-10 text-center">
