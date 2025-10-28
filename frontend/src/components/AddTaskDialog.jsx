@@ -17,8 +17,7 @@ function AddTaskDialog({onAdd}) {
     const [description, setDescription] = useState("");
     const [loading, setLoading] = useState(false);
 
-    const handleAdd = () => {
-        const newTask = {_id: Date.now(), title, description}
+    
 
         const handleAdd = async () => {
             if(!title.trim()){
@@ -39,7 +38,7 @@ function AddTaskDialog({onAdd}) {
                 setLoading(false);
             }
         }
-    }
+    
   return (
     <Dialog>
         <DialogTrigger asChild>
