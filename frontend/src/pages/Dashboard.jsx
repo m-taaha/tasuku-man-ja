@@ -12,7 +12,7 @@ function Dashboard() {
   const [displayName, setDisplayName] = useState("")
 
   useEffect(() => {
-    //fetching user info from localstorage
+    //fetching user info from localstorage to display name on dashboard
     const storedUser = localStorage.getItem("user");
 
     if (storedUser) {
@@ -20,8 +20,7 @@ function Dashboard() {
       const fullName = `${parsedUser.firstName || ""} ${
         parsedUser.lastName || ""
       }`.trim();
-
-
+      
       setDisplayName(fullName || parsedUser.name || "User");
     }
 
