@@ -4,6 +4,7 @@ import AddTaskDialog from '../components/AddTaskDialog'
 import TaskCard from '../components/TaskCard'
 import { Button } from '../components/ui/button'
 import { User } from 'lucide-react'
+import { getAllTasks } from '../utils/api/task.api'
 
 
 function Dashboard() {
@@ -25,6 +26,16 @@ function Dashboard() {
     }
 
     // todo fetch tasks from backend using axiosInstance
+    const fetchTasks = async () => {
+      try{
+        const res = await getAllTasks();
+        setTasks(res.tasks || [])
+      }catch(error) {
+        console.error("Failed to fetch tasks:", error);
+      }
+    };
+
+    fetchTasks()
   }, []);
   return (
     <div className="flex min-h-screen bg-neutral-50 text-neutral-900">
