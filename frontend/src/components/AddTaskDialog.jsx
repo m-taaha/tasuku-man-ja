@@ -10,17 +10,35 @@ import { Button } from './ui/button'
 import { Plus } from 'lucide-react'
 import { Input } from "@/components/ui/input";
 import {Textarea} from '../components/ui/textarea'
+import { toast } from 'sonner';
 
 function AddTaskDialog({onAdd}) {
     const [title, setTitle] = useState("");
     const [description, setDescription] = useState("");
+    const [loading, setLoading] = useState(false);
 
     const handleAdd = () => {
         const newTask = {_id: Date.now(), title, description}
 
-        onAdd(newTask);
-        setTitle("");
-        setDescription("")
+        const handleAdd = async () => {
+            if(!title.trim()){
+                toast.error("Please enter a title");
+                return;
+            }
+
+            try{
+                const newTask = await createTask({title, description});
+                onAdd(newTask.task); //backend returns task object
+                toast.success("Task added successfully");
+                setTitle("");
+                setDescription("")
+            }catch(error){
+                toast.error("Failed to add task");
+                console.log(error);
+            } finally {
+                setLoading(false);
+            }
+        }
     }
   return (
     <Dialog>
@@ -52,9 +70,9 @@ function AddTaskDialog({onAdd}) {
                 <Button 
                 onClick={handleAdd}
                 className='w-full'
-
+                disabled={loading}
                 >
-                    Save Task
+               {   loading?  "Saving...": "Save Task"}
                 </Button>
             </div>
         </DialogContent>
