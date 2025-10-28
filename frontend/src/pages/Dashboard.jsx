@@ -46,7 +46,6 @@ function Dashboard() {
       <main className="flex-1 p-8 overflow-y-auto">
         <div className="flex items-center justify-between mb-6">
           <h1 className="text-3xl font-semibold tracking-tight">
-
             {/* //todo have to make this one change based on first and last name of user - logged in  */}
             Welcome Back, {displayName.split(" ")[0] || "User"}
           </h1>
@@ -55,10 +54,19 @@ function Dashboard() {
 
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
           {tasks.map((task) => (
-            <TaskCard key={task._id} task={task} 
-            onDelete={(deletedId) => 
-              setTasks(tasks.filter((t) => t._id !== deletedId))
-            }
+            <TaskCard
+              key={task._id}
+              task={task}
+              onDelete={(deletedId) =>
+                setTasks(tasks.filter((t) => t._id !== deletedId))
+              }
+              onUpdate={(updatedTask) =>
+                setTasks(
+                  tasks.map((t) =>
+                    t._id === updatedTask._id ? updatedTask : t
+                  )
+                )
+              }
             />
           ))}
 
