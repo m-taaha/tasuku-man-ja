@@ -41,8 +41,9 @@ function EditTaskDialog({ open, onClose, task, onUpdate }) {
     e.preventDefault();
     try {
       const res = await updateTask(task._id, formData);
+      const updatedTask = res.task || res.updatedTask || res.data?.task || res || {};
       toast.success(res.message || "Task updated!");
-      onUpdate(res.task);
+      onUpdate(updatedTask); //triggeres dashboard re-render immediately
       onClose();
     } catch (error) {
       console.error(error);
