@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import {
   Dialog,
   DialogContent,
@@ -14,15 +14,27 @@ import { toast } from "sonner";
 
 function EditTaskDialog({ open, onClose, task, onUpdate }) {
   const [formData, setFormData] = useState({
-    title: task.title || "",
-    description: task.description || "",
-    priority: task.priority || "low",
-    dueDate: task.dueDate ? task.dueDate.split("T")[0] : "",
+    title: "",
+    description: "",
+    priority: "low",
+    dueDate: "",
   });
+
+  // Populate form when dialog opens or task changes
+  useEffect(() => {
+    if (task) {
+      setFormData({
+        title: task.title || "",
+        description: task.description || "",
+        priority: task.priority || "low",
+        dueDate: task.dueDate ? task.dueDate.split("T")[0] : "",
+      });
+    }
+  }, [task]);
 
   const handleChange = (e) => {
     const { name, value } = e.target;
-    setFormData({ ...formData, [name]: value });
+    setFormData((prev) => ({ ...prev, [name]: value }));
   };
 
   const handleSubmit = async (e) => {
@@ -37,6 +49,8 @@ function EditTaskDialog({ open, onClose, task, onUpdate }) {
       toast.error("Failed to update task");
     }
   };
+
+  if (!task) return null; // Prevent rendering if no task is selected
 
   return (
     <Dialog open={open} onOpenChange={onClose}>

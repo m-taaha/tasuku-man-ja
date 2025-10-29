@@ -42,7 +42,7 @@ function TaskCard({ task, onDelete, onEdit }) {
             {task.title}
           </CardTitle>
 
-          {/*  status badge */}
+          {/* Status badge */}
           <span
             className={`text-xs px-2 py-1 rounded-full ${
               task.completed
@@ -58,7 +58,6 @@ function TaskCard({ task, onDelete, onEdit }) {
       <CardContent>
         <p className="text-neutral-600 text-sm mb-2">{task.description}</p>
 
-        {/* Extra info */}
         <p className="text-xs text-neutral-500 mb-4">
           <strong>Priority:</strong> {task.priority || "Not set"} <br />
           <strong>Due:</strong>{" "}
